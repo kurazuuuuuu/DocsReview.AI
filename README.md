@@ -22,7 +22,7 @@ DocsReview.AIは、ユーザーが入力した文章に対してAIがレビュ�
 
 ## 【環境】
 ### Frontend
-- vue.js
+- vue.js (vuetify)
 - TypeScript
 
 ### Backend
