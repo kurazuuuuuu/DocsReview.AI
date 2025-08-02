@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./src/backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./src/backend:/app
+      - /app/.venv  # 仮想環境をボリュームから除外
+    environment:
+      - PYTHONPATH=/app
+    networks:
+      - docsreview-network
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./src/frontend/docsreview-ai
+      dockerfile: Dockerfile
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./src/frontend/docsreview-ai:/app
+      - /app/node_modules  # node_modulesをボリュームから除外
+    depends_on:
+      - backend
+    networks:
+      - docsreview-network
+    restart: unless-stopped
+
+networks:
+  docsreview-network:
+    driver: bridge
