@@ -35,6 +35,26 @@ DocsReview.AIは、ユーザーが入力した文章に対してAIがレビュ�
 ### Deploy
 - Docker
 
+## 【起動方法】
+### Docker Composeを使用した起動
+```bash
+# プロジェクトルートディレクトリで実行
+docker-compose up --build
+
+# バックグラウンドで起動する場合
+docker-compose up -d --build
+```
+
+### アクセス先
+- **Frontend**: http://localhost:5173
+- **Backend**: http://localhost:8000
+- **Backend API Documentation**: http://localhost:8000/docs
+
+### 停止方法
+```bash
+docker-compose down
+```
+
 ## 【注意事項】
 - AIを使用するにあたって情報の安全性は保障できません。個人情報や重要な情報は入力しないでください。もしする際は自己責任でお願いします。開発側は責任を負いません。
 
