@@ -1,1 +1,7 @@
-src/backend/__pycache__
+**/__pycache__/**
+
+*.code-workspace
+
+.vscode/
+
+.env
