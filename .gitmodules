@@ -1,6 +1,3 @@
-[submodule "DocsReview.AI-secret"]
-	path = DocsReview.AI-secret
-	url = https://github.com/kurazuuuuuu/DocsReview.AI-secret.git
 [submodule "secrets"]
 	path = secrets
 	url = https://github.com/kurazuuuuuu/DocsReview.AI-secret.git
