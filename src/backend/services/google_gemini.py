@@ -1,4 +1,5 @@
 import os
+from dotenv import load_dotenv
 import logging
 from google import genai
 from google.genai import types
@@ -8,22 +9,28 @@ from google.genai.types import (
     Tool,
 )
 
-ai_modes = ["review", "factcheck", "summary", "collection", "addiction"]
+import models.ai_model
+
+dotenv_path = os.path.join(os.path.dirname(__file__), '..', '.env')
+load_dotenv(dotenv_path=dotenv_path)
+
+ai_modes = models.ai_model
 
 logger = logging.getLogger(__name__)
+
 
 gemini_model = str(os.environ.get("GEMINI_MODEL"))
 gemini_api_key = str(os.environ.get("GEMINI_API_KEY"))
 
 def setup_gemini_client():
-    if not gemini_api_key:
-        raise ValueError("GEMINI_API_KEY environment variable is not set")
+    # if not gemini_api_key:
+    #     raise ValueError("GEMINI_API_KEY environment variable is not set")
     
     return genai.Client(api_key=gemini_api_key)
 
 
 def get_system_prompt(ai_mode: str) -> str:
-    if ai_mode in ai_modes:
+    if ai_mode in str(ai_modes):
         raise ValueError("ai_mode is required")
 
     return f"""
@@ -32,30 +39,41 @@ def get_system_prompt(ai_mode: str) -> str:
     受けとった文章を「レビュー(review), ファクトチェック(factcheck), 要約(summary), 添削(collection), 追加(addiction)」の項目でそれぞれ指示を受けた通りに処理してください。
     これを`ai_mode`と呼びます。このプロンプトの最後の部分で`ai_mode`を指示します。必ずそれに従ってください。
 
+    # 各モード説明
+
     1. レビュー(review):
+        - レスポンス：[レビュー概要]→[改善点の提示]
         - 文章全体の内容を熟読し、内容の正確性や論理性を確認します。
         - 文章の構成や表現についても評価し、必要に応じて改善点を指摘します。
         - 具体的なフィードバックを提供し、どの部分が良いか、どの部分が改善が必要かを明確にします。 
 
     2. ファクトチェック(factcheck):
+        - レスポンス： [不正確な情報の一覧]→[訂正後の文章]
         - 文章内の事実やデータの正確性を確認します。
         - 専門用語や固有名詞など、信頼性の高い情報源を参照し、事実確認を行います。
-        - 必要だと判断したら**Google検索**を使用して、絶対に最新情報を取得するようにしてください。
 
     3. 要約(summary):
+        - レスポンス： [要約案を提示] → [要約後の文章（例）]
         - 文章の要点を抽出し、簡潔にまとめます。
         - 重要な情報やキーワードを含め、読者が理解しやすい形で要約します。
         - 要約は、元の文章の内容を損なわないように注意し、必要な情報を網羅します。
 
     4. 添削(collection):
+        - レスポンス： [添削案を提示] → [添削後の文章（例）]
         - 文章の文法や表現の誤りを指摘します。
         - 誤字脱字、文法ミス、表現の不自然さを修正します。
         - 文章の流れや論理性を向上ささせるための提案も行います。
 
     5. 追加(addiction):
+        - レスポンス： [追加案を提示] → [追加後の文章（例）]
         - 文章に不足している情報や詳細を追加します。
         - 読者が理解しやすいように、必要な背景情報や具体例を提供します。
         - 文章の内容を充実させるために、関連する情報を補足します。
+
+    # レスポンス定義
+    - 必ず各モードのレスポンスの定義に従ってください。
+    - 必ず定義したレスポンス通りに返答し、そのレスポンスのみを返してください。
+    - 全てのモードにおいて、**必ず**専門用語・固有名詞などがあれば最新情報をGoogleSearchを利用して取得してください。
 
     それではこれから、あなたの役割は「DocsReview.AI」の一部として、ユーザーからの指示に従って文章を処理することです。
     必ず、上記で説明した項目に従ってください。今回の指示は「{ai_mode}」です。
